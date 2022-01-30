@@ -1,5 +1,7 @@
 package pipeline
 
+import "log"
+
 //FilterNegativeNum отбрасывает отрицательные значения
 func FilterNegativeNum(exit <-chan bool, input <-chan int) <-chan int {
 	withoutNeg := make(chan int)
@@ -19,6 +21,7 @@ func FilterNegativeNum(exit <-chan bool, input <-chan int) <-chan int {
 			select {
 			case val := <-input:
 				if val >= 0 {
+					log.Println("number ", val, " passed the filter of negative numbers")
 					withoutNeg <- val
 				}
 			case <-exit:
@@ -48,6 +51,7 @@ func FilterMultipleNum(exit <-chan bool, input <-chan int) <-chan int {
 			select {
 			case val := <-input:
 				if val%3 == 0 && val != 0 {
+					log.Println("number ", val, " passed the filter of multiples of three")
 					withoutMult <- val
 				}
 			case <-exit:

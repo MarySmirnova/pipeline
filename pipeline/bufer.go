@@ -1,6 +1,7 @@
 package pipeline
 
 import (
+	"log"
 	"sync"
 	"time"
 )
@@ -104,8 +105,10 @@ func Buffering(exit <-chan bool, input <-chan int) <-chan int {
 
 			select {
 			case val := <-input:
+				log.Println("number", val, "is added to the buffer")
 				buf.Push(val)
 				if buf.full {
+					log.Println("buffer full, clearing")
 					checkBuf()
 				}
 			case <-exit:
@@ -131,6 +134,7 @@ func Buffering(exit <-chan bool, input <-chan int) <-chan int {
 
 			select {
 			case <-time.After(BufferClearTime):
+				log.Println("it's time to clear the buffer, clearing")
 				checkBuf()
 			case <-exit:
 				return
